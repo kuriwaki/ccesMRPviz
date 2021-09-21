@@ -1,0 +1,53 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ccesMRPviz
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of ccesMRPviz is to visualize and diagnose common tasks in MRP and survey analysis. It was formerly a part of the [ccesMRPrun](https://github.com/kuriwaki/ccesMRPrun) package.
+
+
+```{r, messages=FALSE, warnings=FALSE}
+library(dplyr)
+library(ccesMRPrun)
+library(ccesMRPviz)
+```
+
+
+```{r}
+# MRP sims setup
+mrp_df <- summ_sims(poststrat_draws(fit_GA, poststrat_tgt = acs_GA)) %>%
+  left_join(elec_GA)
+
+
+mrp_df
+```
+
+`scatter_45` is the main function:
+
+```{r viz1}
+scatter_45(mrp_df,
+           clinton_vote,
+           p_mrp_est,
+           lblvar = cd,
+           lbvar = p_mrp_050,
+           ubvar = p_mrp_950,
+           xlab = "Clinton Vote",
+           ylab = "MRP Estimate")
+
+```
+
