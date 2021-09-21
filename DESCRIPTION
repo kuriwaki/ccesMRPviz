@@ -28,7 +28,7 @@ Imports:
     stringr,
     Formula
 Remotes:
-    kuriwaki/ccesMRPprep
+    kuriwaki/ccesMRPprep,
     kuriwaki/ccesMRPrun
 Language: en-US
 Roxygen: list(markdown = TRUE)
