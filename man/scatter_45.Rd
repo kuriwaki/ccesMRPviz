@@ -27,7 +27,7 @@ scatter_45(
   by_form = NULL,
   by_nrow = NULL,
   by_labels = NULL,
-  show_error = TRUE,
+  show_error = "rmse",
   expand_axes = TRUE,
   ...
 )
@@ -78,7 +78,8 @@ which is facet_wrap's default}
 of the unique values of the variable by specified in \code{by_form} (e.g. "model") and
 the values are the corresponding characters to recode to.}
 
-\item{show_error}{Whether or not to show the error statistic in a caption or a corner of the figure}
+\item{show_error}{Which error(s) to show if any. Currently supports
+c(\code{"rmse"}, \verb{"mean}, \code{"bias"}). \code{NULL} for now display.}
 
 \item{expand_axes}{Whether to expand the axes so that the plot is a square,
 even if there is more whitespace. Overrides xlim and ylim.}

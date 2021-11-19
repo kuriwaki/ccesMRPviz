@@ -35,7 +35,7 @@ Roxygen: list(markdown = TRUE)
 License: MIT + file LICENSE
 URL: https://www.github.com/kuriwaki/ccesMRPviz
 BugReports: http://github.com/kuriwaki/ccesMRPviz/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown

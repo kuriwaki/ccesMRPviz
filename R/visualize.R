@@ -26,7 +26,8 @@
 #'  is used.
 #' @param repeat.axis.text Whether to reproduce the axis texts for every facets in
 #'  `facet_rep_wrap()`. Defaults to `FALSE`
-#' @param show_error Whether or not to show the error statistic in a caption or a corner of the figure
+#' @param show_error  Which error(s) to show if any. Currently supports
+#'   c(`"rmse"`, `"mean`, `"bias"`). `NULL` for now display.
 #' @param expand_axes Whether to expand the axes so that the plot is a square,
 #'  even if there is more whitespace. Overrides xlim and ylim.
 #' @param ... Additional arguments sent to the \code{error_lbl} function
@@ -81,7 +82,7 @@ scatter_45 <- function(tbl, xvar, yvar,
                        by_form = NULL,
                        by_nrow = NULL,
                        by_labels = NULL,
-                       show_error = TRUE,
+                       show_error = "rmse",
                        expand_axes = TRUE, ...) {
   # setup
   xvar <- enquo(xvar)
@@ -148,11 +149,11 @@ scatter_45 <- function(tbl, xvar, yvar,
   if (!is.null(ylab))
     gg1 <- gg1 + labs(y = ylab)
 
-  if (show_error) {
+  if (!is.null(show_error)) {
     if (is.null(by_form)) {
       err_txt <- error_lbl(truth = pull(tbl, !!xvar),
                            estimate = pull(tbl, !!yvar),
-                           ...)
+                           show_metrics = show_error)
       gg1 <- gg1 +
         labs(caption = err_txt)
     }
@@ -161,8 +162,11 @@ scatter_45 <- function(tbl, xvar, yvar,
     if (!is.null(by_form)) {
       err_df <- tbl %>%
         group_by(across(all_of(form_char))) %>%
-        summarize(text_to_show = error_lbl({{xvar}}, {{yvar}}),
-                  .groups = "drop")
+        summarize(
+          text_to_show = error_lbl({{xvar}},
+                                   {{yvar}},
+                                   show_metrics = show_error),
+          .groups = "drop")
 
       gg1 <- gg1 +
         geom_text(data = err_df,
