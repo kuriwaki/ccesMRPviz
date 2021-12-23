@@ -19,7 +19,8 @@ scatter_45(
   ubvar = NULL,
   lbvar = NULL,
   colvar = NULL,
-  alpha.CI = 0.8,
+  alpha.CI = 0.75,
+  alpha.point = 0.8,
   alpha.text = 0.5,
   alpha.segment = 0.5,
   max.overlaps = 20,
@@ -55,9 +56,8 @@ scatter_45(
 
 \item{colvar}{Variable to use as colors, unquoted}
 
-\item{alpha.CI}{The transparency value for the error bars, ranging from 0 to 1.}
-
-\item{alpha.text}{The transparency value for the labels, ranging from 0 to 1.}
+\item{alpha.point, alpha.CI, alpha.text}{The transparency value for the
+points (\code{.point}), intervals (\code{.CI}), and text labels (\code{.text}).s}
 
 \item{alpha.segment}{The transparency value for the segments linking the labels to the points, ranging from 0 to 1.}
 

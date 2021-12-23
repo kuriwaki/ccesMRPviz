@@ -16,8 +16,8 @@
 #' @param by_labels A named vector for the facets, where the names are the names
 #' of the unique values of the variable by specified in `by_form` (e.g. "model") and
 #' the values are the corresponding characters to recode to.
-#' @param alpha.CI The transparency value for the error bars, ranging from 0 to 1.
-#' @param alpha.text The transparency value for the labels, ranging from 0 to 1.
+#' @param alpha.point,alpha.CI,alpha.text The transparency value for the
+#'  points (`.point`), intervals (`.CI`), and text labels (`.text`).s
 #' @param alpha.segment The transparency value for the segments linking the labels to the points, ranging from 0 to 1.
 #' @param size.point Size of points to use in ggplot
 #' @param size.text Size for the labels
@@ -74,7 +74,8 @@ scatter_45 <- function(tbl, xvar, yvar,
                        size.errorstat = 2,
                        ubvar = NULL, lbvar = NULL,
                        colvar = NULL,
-                       alpha.CI = 0.8,
+                       alpha.CI = 0.75,
+                       alpha.point = 0.8,
                        alpha.text = 0.5,
                        alpha.segment = 0.5,
                        max.overlaps = 20,
@@ -110,7 +111,7 @@ scatter_45 <- function(tbl, xvar, yvar,
 
   # main plot -- defaults
   gg0 <- ggplot(tbl, aes(x = {{xvar}}, y = {{yvar}}, color = {{colvar}})) +
-    geom_point(size = size.point) +
+    geom_point(size = size.point, alpha = alpha.point) +
     coord_equal(xlim = xlim, ylim = ylim) +
     scale_x_continuous(labels = percent_format(accuracy = 1)) +
     scale_y_continuous(labels = percent_format(accuracy = 1)) +
