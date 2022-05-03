@@ -16,6 +16,8 @@ scatter_45(
   size.point = 0.8,
   size.text = 2,
   size.errorstat = 2,
+  percent = TRUE,
+  pct_accuracy = 1,
   ubvar = NULL,
   lbvar = NULL,
   colvar = NULL,
@@ -52,6 +54,11 @@ scatter_45(
 
 \item{size.errorstat}{Size for the error statistic}
 
+\item{percent}{Are axis values in percent? Defaults to \code{TRUE}}
+
+\item{pct_accuracy}{If using percents on axes, what is the accuracy. Defaults to \code{1}, which displays
+whole numbers}
+
 \item{ubvar, lbvar}{Variable to use as upper and lower bounds for \code{geom_errorbar}, unqoted}
 
 \item{colvar}{Variable to use as colors, unquoted}
@@ -79,7 +86,7 @@ of the unique values of the variable by specified in \code{by_form} (e.g. "model
 the values are the corresponding characters to recode to.}
 
 \item{show_error}{Which error(s) to show if any. Currently supports
-c(\code{"rmse"}, \verb{"mean}, \code{"bias"}). \code{NULL} for now display.}
+c(\code{"rmse"}, \verb{"mean}, \code{"bias"}, \code{"corr"}). \code{NULL} for now display.}
 
 \item{expand_axes}{Whether to expand the axes so that the plot is a square,
 even if there is more whitespace. Overrides xlim and ylim.}

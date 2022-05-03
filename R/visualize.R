@@ -11,6 +11,9 @@
 #' @param by_form If the dataset is in long form with separate rows for different
 #'  model estimates, you can supply a formula to be passed on to `facet_rep_wrap()` to
 #'  have separate facets for each model.
+#' @param percent Are axis values in percent? Defaults to `TRUE`
+#' @param pct_accuracy If using percents on axes, what is the accuracy. Defaults to `1`, which displays
+#'  whole numbers
 #' @param by_nrow If using facets, how many rows should the facet take? Defaults to NULL,
 #' which is facet_wrap's default
 #' @param by_labels A named vector for the facets, where the names are the names
@@ -27,7 +30,7 @@
 #' @param repeat.axis.text Whether to reproduce the axis texts for every facets in
 #'  `facet_rep_wrap()`. Defaults to `FALSE`
 #' @param show_error  Which error(s) to show if any. Currently supports
-#'   c(`"rmse"`, `"mean`, `"bias"`). `NULL` for now display.
+#'   c(`"rmse"`, `"mean`, `"bias"`, `"corr"`). `NULL` for now display.
 #' @param expand_axes Whether to expand the axes so that the plot is a square,
 #'  even if there is more whitespace. Overrides xlim and ylim.
 #' @param ... Additional arguments sent to the \code{error_lbl} function
@@ -72,6 +75,8 @@ scatter_45 <- function(tbl, xvar, yvar,
                        size.point = 0.8,
                        size.text = 2,
                        size.errorstat = 2,
+                       percent = TRUE,
+                       pct_accuracy = 1,
                        ubvar = NULL, lbvar = NULL,
                        colvar = NULL,
                        alpha.CI = 0.75,
@@ -113,12 +118,16 @@ scatter_45 <- function(tbl, xvar, yvar,
   gg0 <- ggplot(tbl, aes(x = {{xvar}}, y = {{yvar}}, color = {{colvar}})) +
     geom_point(size = size.point, alpha = alpha.point) +
     coord_equal(xlim = xlim, ylim = ylim) +
-    scale_x_continuous(labels = percent_format(accuracy = 1)) +
-    scale_y_continuous(labels = percent_format(accuracy = 1)) +
     theme_bw()
 
   gg1 <- gg0 +
     geom_abline(linetype = "dashed", alpha = 0.75)
+
+  if (percent) {
+    gg1 <- gg1 +
+    scale_x_continuous(labels = percent_format(accuracy = pct_accuracy)) +
+      scale_y_continuous(labels = percent_format(accuracy = pct_accuracy))
+  }
 
   if (!is.null(by_form)) {
     form_char <- str_trim(str_remove(attr(terms(by_form), "term.labels"), "~"))
@@ -154,7 +163,9 @@ scatter_45 <- function(tbl, xvar, yvar,
     if (is.null(by_form)) {
       err_txt <- error_lbl(truth = pull(tbl, !!xvar),
                            estimate = pull(tbl, !!yvar),
-                           show_metrics = show_error)
+                           show_metrics = show_error,
+                           is_percent = percent,
+                           ...)
       gg1 <- gg1 +
         labs(caption = err_txt)
     }
@@ -166,7 +177,9 @@ scatter_45 <- function(tbl, xvar, yvar,
         summarize(
           text_to_show = error_lbl({{xvar}},
                                    {{yvar}},
-                                   show_metrics = show_error),
+                                   show_metrics = show_error,
+                                   is_percent = percent,
+                                   ...),
           .groups = "drop")
 
       gg1 <- gg1 +
@@ -187,29 +200,36 @@ scatter_45 <- function(tbl, xvar, yvar,
 #' @param estimate Vector of estimates, must be the same length as \code{truth}.
 #'  In fact, the metrics are invariant to which goes in which.
 #' @param show_metrics The metrics to show. Defaults to RMSE and accuracy
-#' @param metrics_lbl The labels to show for each metric. Named vaector
-#' @param pp_accuracy Significant digits for percentage points. Corresponds to
+#' @param metrics_lbl The labels to show for each metric. Named vector
+#' @param err_accuracy Significant digits for percentage points. Corresponds to
 #' the accuracy argument in scales::percent
+#' @param is_percent Is the error displayed in percent (pp)?
+#' @param suff Suffix units to put on
 #'
-#' @importFrom scales percent_format percent
+#' @importFrom scales percent_format percent number
 #' @importFrom stringr str_c
 #' @importFrom glue glue
 #'
 #' @export
 error_lbl <- function(truth, estimate,
-                      show_metrics = c("rmse", "mean", "bias"),
-                      metrics_lbl = c(rmse = "RMSE", mean = "Mean Abs. Dev.", bias = "Mean Dev."),
-                      pp_accuracy = 0.1) {
+                      show_metrics = c("rmse", "mean", "bias", "corr"),
+                      metrics_lbl = c(rmse = "RMSE", mean = "Mean Abs. Dev.", bias = "Mean Dev.", corr = "Correlation"),
+                      err_accuracy = 0.1,
+                      is_percent = TRUE,
+                      suff = ifelse(is_percent, "pp", "")) {
 
   rmse_stat <- sqrt(mean((truth - estimate)^2))
   mean_stat <- mean(abs(truth - estimate))
   bias_stat <- mean(estimate - truth)
+  corr_stat <- cor(estimate, truth)
 
-  stat_vec <- c(rmse = rmse_stat, mean = mean_stat, bias = bias_stat)
+  stat_vec <- c(rmse = rmse_stat, mean = mean_stat, bias = bias_stat, corr = corr_stat)
 
-  show_stat <- percent(stat_vec[show_metrics],
-                       accuracy = pp_accuracy,
-                       suffix = "pp")
+  if (is_percent)
+    show_stat <- percent(stat_vec[show_metrics], accuracy = err_accuracy, suffix = suff)
+
+  if (!is_percent)
+    show_stat <- number(stat_vec[show_metrics], accuracy = err_accuracy, suffix = suff)
 
   show_lbl <- str_c(str_c(metrics_lbl[show_metrics], show_stat, sep = ": "),
                     collapse = "\n")
