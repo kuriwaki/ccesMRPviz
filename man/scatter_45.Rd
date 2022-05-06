@@ -36,7 +36,9 @@ scatter_45(
 )
 }
 \arguments{
-\item{tbl}{dataset of summary statistics}
+\item{tbl}{dataset of summary statistics. Each row must represent a point.
+Statistics of each point, like the point estimate, 5\% quantile, etc.., must
+be in columns.}
 
 \item{xvar}{Variable to put on x-axis, unquoted}
 

@@ -52,7 +52,26 @@ mrp_df
 #> # … with 1 more variable: clinton_vote_2pty <dbl>
 ```
 
-`scatter_45` is the main function:
+## scatter_45
+
+Currently, the only function is `scatter_45`, which is a wrapper around
+ggplot which enforces a visualization of a simple scatterplot that I
+[argue](https://github.com/RohanAlexander/mrpbook) is important for
+finding patterns in survey estimates relative to ground truth. These
+graphs:
+
+-   Enforce a 1:1 aspect ratio
+-   Uses the same range for both axes
+
+which makes the plot into a square.
+
+In addition, this wrapper easily enables:
+
+-   Computation and listing of summary stats (RMSE, Correlation, Mean
+    Deviance)
+-   Facetting scatterplots using `facet_wrap`
+-   Adding confidence intervals
+-   Coloring and labeling points.
 
 ``` r
 scatter_45(mrp_df,

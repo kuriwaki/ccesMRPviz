@@ -1,6 +1,8 @@
 #' Standard scatterplot with 45 degree line
 #'
-#' @param tbl dataset of summary statistics
+#' @param tbl dataset of summary statistics. Each row must represent a point.
+#'  Statistics of each point, like the point estimate, 5% quantile, etc.., must
+#'  be in columns.
 #' @param xvar Variable to put on x-axis, unquoted
 #' @param yvar Variable to put on y-axis, unquoted
 #' @param lblvar Variable to use as labels for `geom_text_repel`, unquoted
