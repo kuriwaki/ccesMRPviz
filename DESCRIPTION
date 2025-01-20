@@ -1,7 +1,7 @@
 Package: ccesMRPviz
 Type: Package
 Title: Visualizing MRP Models from Cleaned CCES and Census Data
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: person(given = "Shiro",
              family = "Kuriwaki",
              role = c("aut", "cre", "cph"),
@@ -35,7 +35,7 @@ Roxygen: list(markdown = TRUE)
 License: MIT + file LICENSE
 URL: https://www.github.com/kuriwaki/ccesMRPviz
 BugReports: http://github.com/kuriwaki/ccesMRPviz/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown

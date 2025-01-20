@@ -90,7 +90,7 @@ scatter_45 <- function(tbl, xvar, yvar,
                        by_form = NULL,
                        by_nrow = NULL,
                        by_labels = NULL,
-                       show_error = "rmse",
+                       show_error = c("rmse", "n"),
                        expand_axes = TRUE, ...) {
   # setup
   xvar <- enquo(xvar)
@@ -201,40 +201,54 @@ scatter_45 <- function(tbl, xvar, yvar,
 #' @param truth Vector of true values
 #' @param estimate Vector of estimates, must be the same length as \code{truth}.
 #'  In fact, the metrics are invariant to which goes in which.
-#' @param show_metrics The metrics to show. Defaults to RMSE and accuracy
+#' @param show_metrics The metrics to show. One or any of `c("rmse", "mean", "bias", "corr", "n")`.
 #' @param metrics_lbl The labels to show for each metric. Named vector
 #' @param err_accuracy Significant digits for percentage points. Corresponds to
 #' the accuracy argument in scales::percent
 #' @param is_percent Is the error displayed in percent (pp)?
+#' @param rm.na Whether to remove NAs when computing metrics.
+#'  If FALSE and there are NAs, the metrics will be set to NA.
+#'  Argument defaults to TRUE as of v0.0.3.
 #' @param suff Suffix units to put on
 #'
-#' @importFrom scales percent_format percent number
+#' @importFrom scales percent_format percent number comma
 #' @importFrom stringr str_c
 #' @importFrom glue glue
 #'
 #' @export
+#'
+#' @examples
+#'  error_lbl(c(0, 0, 0, 0, 0), c(0.1, -0.1, 0, 0.1, -0.1))
 error_lbl <- function(truth, estimate,
-                      show_metrics = c("rmse", "mean", "bias", "corr"),
-                      metrics_lbl = c(rmse = "RMSE", mean = "Mean Abs. Dev.", bias = "Mean Dev.", corr = "Correlation"),
+                      show_metrics = c("rmse", "mean", "bias", "corr", "n"),
+                      metrics_lbl = c(rmse = "RMSE", mean = "Mean Abs. Dev.", bias = "Mean Dev.", corr = "Correlation", n = "n"),
                       err_accuracy = 0.1,
                       is_percent = TRUE,
+                      rm.na = TRUE,
                       suff = ifelse(is_percent, "pp", "")) {
 
   rmse_stat <- sqrt(mean((truth - estimate)^2))
   mean_stat <- mean(abs(truth - estimate))
   bias_stat <- mean(estimate - truth)
   corr_stat <- cor(estimate, truth)
+  n_stat <- length(intersect(which(!is.na(estimate)), which(!is.na(truth))))
 
   stat_vec <- c(rmse = rmse_stat, mean = mean_stat, bias = bias_stat, corr = corr_stat)
 
+  fmt_metrics <- setdiff(show_metrics, "n")
+
   if (is_percent)
-    show_stat <- percent(stat_vec[show_metrics], accuracy = err_accuracy, suffix = suff)
+    show_stat <- percent(stat_vec[fmt_metrics], accuracy = err_accuracy, suffix = suff)
 
   if (!is_percent)
-    show_stat <- number(stat_vec[show_metrics], accuracy = err_accuracy, suffix = suff)
+    show_stat <- number(stat_vec[fmt_metrics], accuracy = err_accuracy, suffix = suff)
 
-  show_lbl <- str_c(str_c(metrics_lbl[show_metrics], show_stat, sep = ": "),
+  show_lbl <- str_c(str_c(metrics_lbl[fmt_metrics], show_stat, sep = ": "),
                     collapse = "\n")
+
+
+  if (any(show_metrics == "n"))
+    show_lbl <- str_c(show_lbl, "\nn = ", scales::comma(n_stat), collapse = "")
 
   show_lbl
 }

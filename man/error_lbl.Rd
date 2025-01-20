@@ -7,11 +7,12 @@
 error_lbl(
   truth,
   estimate,
-  show_metrics = c("rmse", "mean", "bias", "corr"),
+  show_metrics = c("rmse", "mean", "bias", "corr", "n"),
   metrics_lbl = c(rmse = "RMSE", mean = "Mean Abs. Dev.", bias = "Mean Dev.", corr =
-    "Correlation"),
+    "Correlation", n = "n"),
   err_accuracy = 0.1,
   is_percent = TRUE,
+  rm.na = TRUE,
   suff = ifelse(is_percent, "pp", "")
 )
 }
@@ -21,7 +22,7 @@ error_lbl(
 \item{estimate}{Vector of estimates, must be the same length as \code{truth}.
 In fact, the metrics are invariant to which goes in which.}
 
-\item{show_metrics}{The metrics to show. Defaults to RMSE and accuracy}
+\item{show_metrics}{The metrics to show. One or any of \code{c("rmse", "mean", "bias", "corr", "n")}.}
 
 \item{metrics_lbl}{The labels to show for each metric. Named vector}
 
@@ -30,8 +31,15 @@ the accuracy argument in scales::percent}
 
 \item{is_percent}{Is the error displayed in percent (pp)?}
 
+\item{rm.na}{Whether to remove NAs when computing metrics.
+If FALSE and there are NAs, the metrics will be set to NA.
+Argument defaults to TRUE as of v0.0.3.}
+
 \item{suff}{Suffix units to put on}
 }
 \description{
 Labels for accuracy metric
+}
+\examples{
+ error_lbl(c(0, 0, 0, 0, 0), c(0.1, -0.1, 0, 0.1, -0.1))
 }

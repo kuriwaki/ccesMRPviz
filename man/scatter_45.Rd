@@ -30,7 +30,7 @@ scatter_45(
   by_form = NULL,
   by_nrow = NULL,
   by_labels = NULL,
-  show_error = "rmse",
+  show_error = c("rmse", "n"),
   expand_axes = TRUE,
   ...
 )
