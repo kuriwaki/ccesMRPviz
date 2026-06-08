@@ -74,10 +74,10 @@ points (\code{.point}), intervals (\code{.CI}), and text labels (\code{.text}).s
 is used.}
 
 \item{repeat.axis.text}{Whether to reproduce the axis texts for every facets in
-\code{facet_rep_wrap()}. Defaults to \code{FALSE}}
+\code{facet_wrap2()}. Defaults to \code{FALSE}}
 
 \item{by_form}{If the dataset is in long form with separate rows for different
-model estimates, you can supply a formula to be passed on to \code{facet_rep_wrap()} to
+model estimates, you can supply a formula to be passed on to \code{facet_wrap2()} to
 have separate facets for each model.}
 
 \item{by_nrow}{If using facets, how many rows should the facet take? Defaults to NULL,
