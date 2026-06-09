@@ -1,33 +1,31 @@
 Package: ccesMRPviz
 Type: Package
 Title: Visualizing MRP Models from Cleaned CCES and Census Data
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: person(given = "Shiro",
              family = "Kuriwaki",
              role = c("aut", "cre", "cph"),
              email = "shirokuriwaki@gmail.com",
              comment = c(ORCID = "0000-0002-5687-2647"))
-Description: Companion to ccesMRPprep and ccesMRPrun
+Description: Visualization tools that serve as a companion to the 'ccesMRPprep'
+    and 'ccesMRPrun' packages for Multilevel Regression and Poststratification
+    (MRP) models estimated from CCES and Census data.
 Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 2.10)
 Imports:
     dplyr,
-    ccesMRPrun (>= 0.0.7),
-    ccesMRPprep,
-    dplyr,
     stats,
-    readr,
     tibble,
     ggplot2,
     ggrepel,
-    lemon,
+    ggh4x,
     glue,
-    scales, 
+    scales,
     stringr,
     purrr,
-    Formula
+    ccesMRPrun (>= 0.0.7)
 Remotes:
     kuriwaki/ccesMRPprep,
     kuriwaki/ccesMRPrun
@@ -36,7 +34,7 @@ Roxygen: list(markdown = TRUE)
 License: MIT + file LICENSE
 URL: https://www.github.com/kuriwaki/ccesMRPviz
 BugReports: http://github.com/kuriwaki/ccesMRPviz/issues
-Suggests: 
+Suggests:
     knitr,
     rmarkdown
 Config/roxygen2/version: 8.0.0

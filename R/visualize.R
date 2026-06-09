@@ -11,7 +11,7 @@
 #' @param xlab,ylab x and y-axis labels, respectively
 #' @param xlim,ylim x and y-axis limits, respectively
 #' @param by_form If the dataset is in long form with separate rows for different
-#'  model estimates, you can supply a formula to be passed on to `facet_rep_wrap()` to
+#'  model estimates, you can supply a formula to be passed on to `facet_wrap2()` to
 #'  have separate facets for each model.
 #' @param percent Are axis values in percent? Defaults to `TRUE`
 #' @param pct_accuracy If using percents on axes, what is the accuracy. Defaults to `1`, which displays
@@ -30,7 +30,7 @@
 #' @param max.overlaps To be passed on to \code{geom_text_repel} if a label
 #'  is used.
 #' @param repeat.axis.text Whether to reproduce the axis texts for every facets in
-#'  `facet_rep_wrap()`. Defaults to `FALSE`
+#'  `facet_wrap2()`. Defaults to `FALSE`
 #' @param show_error  Which error(s) to show if any. Currently supports
 #'   c(`"rmse"`, `"mean`, `"bias"`, `"corr"`). `NULL` for now display.
 #' @param expand_axes Whether to expand the axes so that the plot is a square,
@@ -40,14 +40,15 @@
 #'
 #'
 #' @import ggplot2
-#' @importFrom lemon facet_rep_wrap
+#' @importFrom ggh4x facet_wrap2
+#' @importFrom ccesMRPrun summ_sims poststrat_draws
 #' @importFrom scales percent_format
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom stringr str_replace str_trim str_remove
-#' @importFrom dplyr pull enquo `%>%`
+#' @importFrom dplyr pull enquo `%>%` group_by across all_of summarize
 #' @importFrom tibble enframe
 #' @importFrom purrr is_formula
-#' @importFrom stats terms
+#' @importFrom stats terms cor
 #'
 #' @export
 #'
@@ -135,10 +136,10 @@ scatter_45 <- function(tbl, xvar, yvar,
     form_char <- str_trim(str_remove(attr(terms(by_form), "term.labels"), "~"))
     formvar <- enquo(form_char)
     gg1 <- gg1 +
-      facet_rep_wrap(by_form,
-                     labeller = as_labeller(by_labels),
-                     repeat.tick.labels = repeat.axis.text,
-                     nrow = by_nrow)
+      facet_wrap2(by_form,
+                  labeller = as_labeller(by_labels),
+                  axes = if (repeat.axis.text) "all" else "margins",
+                  nrow = by_nrow)
   }
 
   if (ub_name != "NULL" & lb_name != "NULL") {
@@ -186,7 +187,7 @@ scatter_45 <- function(tbl, xvar, yvar,
 
       gg1 <- gg1 +
         geom_text(data = err_df,
-                  mapping = aes(label = text_to_show),
+                  mapping = aes(label = .data$text_to_show),
                   x = Inf, y = -Inf, hjust = 1.1, vjust = -0.5,
                   lineheight = 1, size = size.errorstat, inherit.aes = FALSE)
     }
